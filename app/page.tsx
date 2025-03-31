@@ -7,19 +7,25 @@ export default function HomePage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative bg-gray-600 text-white text-center py-24 md:py-32">
+      <section className="relative bg-gray-600 dark:bg-gray-800 text-white text-center py-24 md:py-32">
         <div className="absolute inset-0 bg-black/50 z-0"></div>
         <div className="container relative z-10">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Anhelina Vavzhyniak</h1>
           <p className="text-lg md:text-xl mb-8">Fotografka s vášní pro zachycení jedinečných okamžiků</p>
           <div className="flex justify-center gap-4">
             <Link href="/portfolio">
-              <Button variant="default" className="bg-black hover:bg-black/80">
+              <Button
+                variant="default"
+                className="bg-black hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
+              >
                 Prohlédnout portfolio
               </Button>
             </Link>
             <Link href="/kontakt">
-              <Button variant="outline" className="bg-transparent text-white border-white hover:bg-white/20">
+              <Button
+                variant="outline"
+                className="bg-transparent text-white border-white hover:bg-white/20 dark:border-white dark:text-white dark:hover:bg-white/20"
+              >
                 Kontaktovat
               </Button>
             </Link>
@@ -147,9 +153,12 @@ export default function HomePage() {
                 <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
                   <ImageIcon className="h-12 w-12 opacity-20" />
                 </div>
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <div className="absolute inset-0 bg-black/60 dark:bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                   <Link href={`/portfolio/${item}`}>
-                    <Button variant="outline" className="text-white border-white hover:bg-white/20">
+                    <Button
+                      variant="outline"
+                      className="text-white border-white hover:bg-white/20 dark:text-white dark:border-white dark:hover:bg-white/20"
+                    >
                       Zobrazit
                     </Button>
                   </Link>
@@ -169,7 +178,9 @@ export default function HomePage() {
             spolupráci.
           </p>
           <Link href="/kontakt">
-            <Button className="bg-white text-black hover:bg-white/90">Kontaktujte mě</Button>
+            <Button className="bg-white text-black hover:bg-white/90 dark:bg-white dark:text-black dark:hover:bg-white/90">
+              Kontaktujte mě
+            </Button>
           </Link>
         </div>
       </section>

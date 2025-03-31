@@ -15,24 +15,15 @@ export function Logo({ className, size = "md", variant = "default" }: LogoProps)
 
   // Definice velikostí
   const sizes = {
-    sm: "h-6 w-6 text-xs",
-    md: "h-8 w-8 text-sm",
-    lg: "h-10 w-10 text-base",
-    xl: "h-12 w-12 text-lg",
+    sm: "h-8 w-8 text-xs",
+    md: "h-10 w-10 text-sm",
+    lg: "h-12 w-12 text-base",
+    xl: "h-14 w-14 text-lg",
   }
 
   // Barvy pro světlý a tmavý režim
-  const lightColors = {
-    primary: "text-primary bg-primary/10",
-    secondary: "text-secondary bg-secondary/10",
-    accent: "text-accent bg-accent/10",
-  }
-
-  const darkColors = {
-    primary: "dark:text-primary-foreground dark:bg-primary/90",
-    secondary: "dark:text-secondary-foreground dark:bg-secondary/90",
-    accent: "dark:text-accent-foreground dark:bg-accent/90",
-  }
+  const lightModeClasses = "bg-primary/10 text-primary"
+  const darkModeClasses = "dark:bg-black dark:text-white"
 
   if (variant === "minimal") {
     return (
@@ -40,7 +31,7 @@ export function Logo({ className, size = "md", variant = "default" }: LogoProps)
         <span
           className={cn(
             "transition-colors",
-            isDark ? "text-primary-foreground" : "text-primary",
+            isDark ? "text-white" : "text-primary",
             sizes[size]
               .split(" ")
               .pop(), // Použijeme pouze část s velikostí textu
@@ -53,26 +44,16 @@ export function Logo({ className, size = "md", variant = "default" }: LogoProps)
   }
 
   return (
-    <div className={cn("flex items-center gap-1", className)}>
+    <div className={cn("flex items-center", className)}>
       <div
         className={cn(
           "rounded-full flex items-center justify-center font-semibold transition-colors",
           sizes[size],
-          lightColors.primary,
-          darkColors.primary,
+          lightModeClasses,
+          darkModeClasses,
         )}
       >
-        A
-      </div>
-      <div
-        className={cn(
-          "rounded-full flex items-center justify-center font-semibold transition-colors",
-          sizes[size],
-          lightColors.secondary,
-          darkColors.secondary,
-        )}
-      >
-        V
+        AV
       </div>
     </div>
   )

@@ -1,26 +1,37 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Instagram, Facebook, Mail, Phone, MapPin } from "lucide-react"
+import { Logo } from "@/components/logo"
 
 export function SiteFooter() {
   return (
-    <footer className="bg-muted/40">
+    <footer className="bg-muted/40 dark:bg-muted/10">
       <div className="container py-8 md:py-12">
-        <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-          <div className="space-y-3 md:space-y-4">
-            <h3 className="text-base md:text-lg font-semibold">Anhelina Vavzhyniak</h3>
-            <p className="text-xs md:text-sm text-muted-foreground">
-              Fotografka s vášní pro zachycení jedinečných okamžiků
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-4">
+          <div className="space-y-3">
+            <div className="flex items-center space-x-2">
+              <Logo variant="minimal" size="lg" />
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Profesionální fotografka se zaměřením na portrétní, módní a komerční fotografii.
             </p>
             <div className="flex space-x-2">
               <Link href="https://instagram.com" target="_blank" rel="noopener noreferrer">
-                <Button variant="ghost" size="icon" className="h-7 w-7 md:h-8 md:w-8">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 md:h-8 md:w-8 text-foreground hover:text-primary hover:bg-primary/10"
+                >
                   <Instagram className="h-3.5 w-3.5 md:h-4 md:w-4" />
                   <span className="sr-only">Instagram</span>
                 </Button>
               </Link>
               <Link href="https://facebook.com" target="_blank" rel="noopener noreferrer">
-                <Button variant="ghost" size="icon" className="h-7 w-7 md:h-8 md:w-8">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 md:h-8 md:w-8 text-foreground hover:text-primary hover:bg-primary/10"
+                >
                   <Facebook className="h-3.5 w-3.5 md:h-4 md:w-4" />
                   <span className="sr-only">Facebook</span>
                 </Button>
