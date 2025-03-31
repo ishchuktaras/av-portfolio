@@ -1,4 +1,3 @@
-// Auth hook for general authentication
 export const useAuth = () => {
   return {
     user: { uid: "test-user-id", email: "test@example.com" },

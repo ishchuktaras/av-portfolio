@@ -1,17 +1,55 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { ImageIcon } from "lucide-react"
+import { FilterBar } from "@/components/portfolio/filter-bar"
+import { Pagination } from "@/components/portfolio/pagination"
+import { PhotoGrid } from "@/components/portfolio/photo-grid"
+import { getPhotos, getPhotosCount, searchPhotos } from "@/lib/api/photos"
+import { getCategories } from "@/lib/api/categories"
+import type { PhotoFilter } from "@/lib/repositories/photo-repository"
 
-// Categories for filtering
-const categories = [
-  { id: "all", name: "Vše" },
-  { id: "portraits", name: "Portréty" },
-  { id: "fashion", name: "Móda" },
-  { id: "commercial", name: "Komerční" },
-  { id: "events", name: "Události" },
-]
+export const revalidate = 0
 
-export default function PortfolioPage() {
+interface PortfolioPageProps {
+  searchParams: {
+    q?: string
+    category?: string
+    aspectRatio?: string
+    featured?: string
+    sortBy?: string
+    sortOrder?: string
+    page?: string
+  }
+}
+
+export default async function PortfolioPage({ searchParams }: PortfolioPageProps) {
+  // Parsování parametrů
+  const query = searchParams.q
+  const categoryId = searchParams.category ? Number.parseInt(searchParams.category) : undefined
+  const aspectRatio = searchParams.aspectRatio !== "all" ? searchParams.aspectRatio : undefined
+  const featured = searchParams.featured === "true"
+  const sortBy = searchParams.sortBy as "createdAt" | "title" | "relevance" | undefined
+  const sortOrder = searchParams.sortOrder as "asc" | "desc" | undefined
+  const currentPage = searchParams.page ? Number.parseInt(searchParams.page) : 1
+  const itemsPerPage = 12
+
+  // Vytvoření filtru
+  const filter: PhotoFilter = {
+    categoryId,
+    aspectRatio,
+    featured: searchParams.featured === "true" ? true : undefined,
+    sortBy,
+    sortOrder,
+    limit: itemsPerPage,
+    offset: (currentPage - 1) * itemsPerPage,
+  }
+
+  // Získání dat
+  const categories = await getCategories()
+  const photos = query ? await searchPhotos(query) : await getPhotos(filter)
+  const totalItems = await getPhotosCount({
+    categoryId,
+    aspectRatio,
+    featured: searchParams.featured === "true" ? true : undefined,
+  })
+
   return (
     <>
       <section className="bg-muted/30 py-12">
@@ -25,36 +63,25 @@ export default function PortfolioPage() {
 
       <section className="py-16">
         <div className="container">
-          {/* Filter buttons */}
-          <div className="flex flex-wrap gap-2 mb-12">
-            {categories.map((category) => (
-              <Button
-                key={category.id}
-                variant={category.id === "all" ? "default" : "outline"}
-                className="rounded-full"
-              >
-                {category.name}
-              </Button>
-            ))}
+          {/* Filter bar */}
+          <div className="mb-8">
+            <FilterBar categories={categories} />
           </div>
 
-          {/* Portfolio grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {Array.from({ length: 12 }).map((_, index) => (
-              <div key={index} className="aspect-square bg-muted rounded-md overflow-hidden relative group">
-                <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
-                  <ImageIcon className="h-12 w-12 opacity-20" />
-                </div>
-                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <Link href={`/portfolio/${index + 1}`}>
-                    <Button variant="outline" className="text-white border-white hover:bg-white/20">
-                      Zobrazit
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            ))}
+          {/* Results info */}
+          <div className="mb-6 flex justify-between items-center">
+            <p className="text-muted-foreground">
+              {totalItems === 0
+                ? "Nebyly nalezeny žádné fotografie"
+                : `Zobrazuji ${(currentPage - 1) * itemsPerPage + 1} - ${Math.min(currentPage * itemsPerPage, totalItems)} z ${totalItems} fotografií`}
+            </p>
           </div>
+
+          {/* Photo grid */}
+          <PhotoGrid photos={photos} />
+
+          {/* Pagination */}
+          <Pagination totalItems={totalItems} itemsPerPage={itemsPerPage} currentPage={currentPage} />
         </div>
       </section>
     </>

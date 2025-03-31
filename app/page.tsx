@@ -35,7 +35,7 @@ export default function HomePage() {
               <h2 className="text-3xl font-bold mb-6">O mně</h2>
               <div className="space-y-4">
                 <p>
-                  Jsem Anhelina Vavzhyniak, studentka Východní akademie v Jihlavě a vášnivá fotografka. Moje cesta ve
+                  Jsem Anhelina Vavzhyniak, studentka Obchodní akademie v Jihlavě a vášnivá fotografka. Moje cesta ve
                   fotografii začala jako koníček, ale rychle se proměnila v něco víc.
                 </p>
                 <p>

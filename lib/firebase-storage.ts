@@ -113,7 +113,6 @@ export const uploadPhoto = async (
     title: file.name,
     category: "personal",
     aspectRatio: "square",
-    dateCreated: new Date().toISOString(),
   },
 ): Promise<Photo> => {
   try {
@@ -130,6 +129,7 @@ export const uploadPhoto = async (
         storageUrl: `demo/${Date.now()}_${file.name}`,
         downloadUrl: mockUrl,
         thumbnailUrl: mockUrl,
+        dateCreated: new Date().toISOString(),
         ...photoData,
       }
 
@@ -146,6 +146,7 @@ export const uploadPhoto = async (
       storageUrl: fullPath,
       downloadUrl: url,
       thumbnailUrl: url, // For simplicity, using the same URL for thumbnail
+      dateCreated: new Date().toISOString(),
       ...photoData,
     }
 

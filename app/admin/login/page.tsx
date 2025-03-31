@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { useAuth } from "@/lib/auth-hooks"
+import { useAuth } from "@/lib/auth-hooks" // Updated import
 import { LogIn } from "lucide-react"
 
 export default function LoginPage() {
@@ -28,7 +28,7 @@ export default function LoginPage() {
       if (result.success) {
         router.push("/admin")
       } else {
-        setError("error" in result ? (result.error as string) : "Failed to sign in")
+        setError(result.error || "Failed to sign in")
       }
     } catch (error: any) {
       setError(error.message || "An error occurred during sign in")

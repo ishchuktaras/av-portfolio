@@ -201,12 +201,22 @@ export function EditPhotoForm({ id }: EditPhotoFormProps) {
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="portraits">Portraits</SelectItem>
-                    <SelectItem value="fashion">Fashion</SelectItem>
-                    <SelectItem value="creative">Creative</SelectItem>
-                    <SelectItem value="events">Events</SelectItem>
-                    <SelectItem value="commercial">Commercial</SelectItem>
-                    <SelectItem value="personal">Personal</SelectItem>
+                    <SelectItem value="portraits">Portréty</SelectItem>
+                    <SelectItem value="fashion">Módní</SelectItem>
+                    <SelectItem value="creative">Kreativní</SelectItem>
+                    <SelectItem value="events">Události</SelectItem>
+                    <SelectItem value="commercial">Komerční</SelectItem>
+                    <SelectItem value="personal">Osobní</SelectItem>
+                    <SelectItem value="wedding">Svatební</SelectItem>
+                    <SelectItem value="family">Rodinné</SelectItem>
+                    <SelectItem value="boudoir">Boudoir</SelectItem>
+                    <SelectItem value="landscape">Krajina</SelectItem>
+                    <SelectItem value="street">Pouliční</SelectItem>
+                    <SelectItem value="architecture">Architektura</SelectItem>
+                    <SelectItem value="product">Produktové</SelectItem>
+                    <SelectItem value="travel">Cestovní</SelectItem>
+                    <SelectItem value="blackandwhite">Černobílé</SelectItem>
+                    <SelectItem value="conceptual">Konceptuální</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

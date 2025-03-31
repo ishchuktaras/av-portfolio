@@ -51,7 +51,6 @@ export default function TestUploadPage() {
         title: image.name.split(".")[0],
         category: "personal",
         aspectRatio: "square",
-        dateCreated: new Date().toISOString(),
       })
 
       setSuccess(true)

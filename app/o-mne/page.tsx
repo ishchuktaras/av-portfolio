@@ -24,7 +24,7 @@ export default function AboutPage() {
               <h2 className="text-3xl font-bold mb-6">Anhelina Vavzhyniak</h2>
               <div className="space-y-4">
                 <p>
-                  Jsem Anhelina Vavzhyniak, studentka Východní akademie v Jihlavě a vášnivá fotografka. Moje cesta ve
+                  Jsem studentka na Střední odborní škole služeb v Jihlavě a vášnivá fotografka. Moje cesta ve
                   fotografii začala jako koníček, ale rychle se proměnila v něco víc.
                 </p>
                 <p>
@@ -48,7 +48,7 @@ export default function AboutPage() {
 
       <section className="py-16 bg-muted/30">
         <div className="container">
-          <h2 className="text-3xl font-bold text-center mb-12">Moje přístup</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">Muj přístup</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-background p-6 rounded-lg text-center">
               <div className="mx-auto bg-primary/10 p-3 rounded-full w-fit mb-4">

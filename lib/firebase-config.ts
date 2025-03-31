@@ -1,6 +1,3 @@
-// Firebase configuration types and utilities
-
-// Photo types
 export type PhotoCategory = "portraits" | "fashion" | "creative" | "events" | "commercial" | "personal"
 export type AspectRatio = "portrait" | "landscape" | "square"
 

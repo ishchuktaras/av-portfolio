@@ -1,8 +1,10 @@
 "use client"
 
 import type React from "react"
+
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -10,119 +12,96 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { useRequireAuth } from "@/lib/auth-hooks"
-import { uploadPhoto } from "@/lib/firebase-storage"
-import type { PhotoCategory, AspectRatio } from "@/lib/firebase-config"
-import { Upload, ImageIcon } from "lucide-react"
+import { UploadButton } from "@/components/upload-button"
+import { AspectRatio } from "@/components/ui/aspect-ratio"
+import { ArrowLeft } from "lucide-react"
+import { useToast } from "@/components/ui/use-toast"
+import { uploadPhotoAction } from "@/lib/actions/photo-actions"
 
 export default function UploadPage() {
-  const { isAuthenticated, loading } = useRequireAuth()
   const router = useRouter()
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [preview, setPreview] = useState<string | null>(null)
+  const { toast } = useToast()
+
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
-  const [category, setCategory] = useState<PhotoCategory>("portraits")
-  const [aspectRatio, setAspectRatio] = useState<AspectRatio>("square")
+  const [category, setCategory] = useState("1")
+  const [aspectRatio, setAspectRatio] = useState("square")
   const [tags, setTags] = useState("")
   const [featured, setFeatured] = useState(false)
-  const [isUploading, setIsUploading] = useState(false)
+  const [imageUrl, setImageUrl] = useState("")
+  const [uploadKey, setUploadKey] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState<string | null>(null)
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      setSelectedFile(file)
-
-      // Create preview
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setPreview(reader.result as string)
-      }
-      reader.readAsDataURL(file)
-    }
+  const handleUploadComplete = (url: string, key: string) => {
+    setImageUrl(url)
+    setUploadKey(key)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!selectedFile) {
-      setError("Please select a file to upload")
+    if (!imageUrl) {
+      setError("Please select an image to upload.")
       return
     }
 
-    setIsUploading(true)
+    setIsSubmitting(true)
     setError(null)
-    setSuccess(null)
 
     try {
-      // Upload photo using the new function
-      await uploadPhoto(selectedFile, {
-        title,
-        description,
-        category,
-        aspectRatio,
-        tags: tags
-          .split(",")
-          .map((tag) => tag.trim())
-          .filter((tag) => tag),
-        featured,
-        dateCreated: new Date().toISOString(),
+      // Vytvoření FormData objektu
+      const formData = new FormData()
+      formData.append("title", title)
+      formData.append("description", description)
+      formData.append("categoryId", category)
+      formData.append("aspectRatio", aspectRatio)
+      formData.append("imageUrl", imageUrl)
+      formData.append("thumbnailUrl", imageUrl) // Pro jednoduchost používáme stejné URL
+      formData.append("uploadKey", uploadKey)
+      formData.append("featured", featured ? "on" : "off")
+      formData.append("tags", tags)
+
+      // Použití Server Action
+      const result = await uploadPhotoAction(formData)
+
+      if (!result.success) {
+        throw new Error(result.error || "Failed to save photo")
+      }
+
+      toast({
+        title: "Success!",
+        description: "Photo uploaded successfully",
       })
 
-      setSuccess("Photo was successfully uploaded")
-
-      // Reset form
-      setSelectedFile(null)
-      setPreview(null)
-      setTitle("")
-      setDescription("")
-      setCategory("portraits")
-      setAspectRatio("square")
-      setTags("")
-      setFeatured(false)
-
-      // Redirect to photos list after 2 seconds
-      setTimeout(() => {
-        router.push("/admin/photos")
-      }, 2000)
-    } catch (error) {
-      console.error("Error uploading:", error)
-      setError("An error occurred while uploading the photo. Please try again.")
+      // Přesměrování na seznam fotografií
+      router.push("/admin/photos")
+      router.refresh()
+    } catch (err) {
+      console.error(err)
+      setError(err instanceof Error ? err.message : "An error occurred")
     } finally {
-      setIsUploading(false)
+      setIsSubmitting(false)
     }
   }
 
-  if (loading) {
-    return (
-      <div className="container py-24 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="h-16 w-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
-          <p className="text-muted-foreground animate-pulse">Loading...</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (!isAuthenticated) {
-    router.push("/admin/login")
-    return null
-  }
-
   return (
-    <div className="container py-24">
-      <h1 className="text-3xl font-bold mb-6">Upload New Photo</h1>
+    <div className="container py-12">
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold">Upload New Photo</h1>
+        <Link href="/admin/photos">
+          <Button variant="outline" className="flex items-center gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Photos
+          </Button>
+        </Link>
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Upload className="h-5 w-5" />
-              Upload Photo
-            </CardTitle>
-            <CardDescription>Select a photo and fill in the information</CardDescription>
+            <CardTitle>Photo Details</CardTitle>
+            <CardDescription>Enter information about your photo</CardDescription>
           </CardHeader>
           <CardContent>
             {error && (
@@ -131,18 +110,7 @@ export default function UploadPage() {
               </Alert>
             )}
 
-            {success && (
-              <Alert className="mb-4 bg-primary/10 border-primary text-primary">
-                <AlertDescription>{success}</AlertDescription>
-              </Alert>
-            )}
-
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="file">Select file</Label>
-                <Input id="file" type="file" accept="image/*" onChange={handleFileChange} disabled={isUploading} />
-              </div>
-
               <div className="space-y-2">
                 <Label htmlFor="title">Title</Label>
                 <Input
@@ -151,7 +119,7 @@ export default function UploadPage() {
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Enter photo title"
                   required
-                  disabled={isUploading}
+                  disabled={isSubmitting}
                 />
               </div>
 
@@ -162,38 +130,38 @@ export default function UploadPage() {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Enter photo description"
-                  disabled={isUploading}
+                  disabled={isSubmitting}
                 />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="category">Category</Label>
-                <Select
-                  value={category}
-                  onValueChange={(value) => setCategory(value as PhotoCategory)}
-                  disabled={isUploading}
-                >
+                <Select value={category} onValueChange={setCategory} disabled={isSubmitting}>
                   <SelectTrigger id="category">
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="portraits">Portraits</SelectItem>
-                    <SelectItem value="fashion">Fashion</SelectItem>
-                    <SelectItem value="creative">Creative</SelectItem>
-                    <SelectItem value="events">Events</SelectItem>
-                    <SelectItem value="commercial">Commercial</SelectItem>
-                    <SelectItem value="personal">Personal</SelectItem>
+                    <SelectItem value="1">Portréty</SelectItem>
+                    <SelectItem value="2">Módní</SelectItem>
+                    <SelectItem value="3">Kreativní</SelectItem>
+                    <SelectItem value="4">Svatební</SelectItem>
+                    <SelectItem value="5">Rodinné</SelectItem>
+                    <SelectItem value="6">Boudoir</SelectItem>
+                    <SelectItem value="7">Krajina</SelectItem>
+                    <SelectItem value="8">Pouliční</SelectItem>
+                    <SelectItem value="9">Architektura</SelectItem>
+                    <SelectItem value="10">Produktové</SelectItem>
+                    <SelectItem value="11">Události</SelectItem>
+                    <SelectItem value="12">Cestovní</SelectItem>
+                    <SelectItem value="13">Černobílé</SelectItem>
+                    <SelectItem value="14">Konceptuální</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="aspectRatio">Aspect Ratio</Label>
-                <Select
-                  value={aspectRatio}
-                  onValueChange={(value) => setAspectRatio(value as AspectRatio)}
-                  disabled={isUploading}
-                >
+                <Select value={aspectRatio} onValueChange={setAspectRatio} disabled={isSubmitting}>
                   <SelectTrigger id="aspectRatio">
                     <SelectValue placeholder="Select aspect ratio" />
                   </SelectTrigger>
@@ -212,7 +180,7 @@ export default function UploadPage() {
                   value={tags}
                   onChange={(e) => setTags(e.target.value)}
                   placeholder="portrait, black and white, studio"
-                  disabled={isUploading}
+                  disabled={isSubmitting}
                 />
               </div>
 
@@ -223,13 +191,13 @@ export default function UploadPage() {
                   checked={featured}
                   onChange={(e) => setFeatured(e.target.checked)}
                   className="h-4 w-4 rounded border-gray-300"
-                  disabled={isUploading}
+                  disabled={isSubmitting}
                 />
                 <Label htmlFor="featured">Featured photo</Label>
               </div>
 
-              <Button type="submit" className="w-full" disabled={isUploading}>
-                {isUploading ? "Uploading..." : "Upload Photo"}
+              <Button type="submit" className="w-full" disabled={isSubmitting || !imageUrl}>
+                {isSubmitting ? "Saving..." : "Save Photo"}
               </Button>
             </form>
           </CardContent>
@@ -237,27 +205,36 @@ export default function UploadPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <ImageIcon className="h-5 w-5" />
-              Preview
-            </CardTitle>
-            <CardDescription>Preview of selected photo</CardDescription>
+            <CardTitle>Upload Image</CardTitle>
+            <CardDescription>Upload your photo (max 8MB)</CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="border rounded-lg overflow-hidden aspect-square flex items-center justify-center bg-gray-100 dark:bg-gray-800">
-              {preview ? (
-                <img
-                  src={preview || "/placeholder.svg"}
-                  alt="Preview"
-                  className="max-w-full max-h-full object-contain"
-                />
-              ) : (
-                <div className="text-center p-8 text-muted-foreground">
-                  <ImageIcon className="h-12 w-12 mx-auto mb-2 opacity-20" />
-                  <p>Select a photo to see preview</p>
-                </div>
-              )}
-            </div>
+          <CardContent className="space-y-4">
+            {!imageUrl ? (
+              <div className="border rounded-md p-4">
+                <UploadButton onUploadComplete={handleUploadComplete} isUploading={isSubmitting} />
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <AspectRatio ratio={aspectRatio === "portrait" ? 3 / 4 : aspectRatio === "landscape" ? 16 / 9 : 1 / 1}>
+                  <img
+                    src={imageUrl || "/placeholder.svg"}
+                    alt="Preview"
+                    className="rounded-md object-cover w-full h-full"
+                  />
+                </AspectRatio>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => {
+                    setImageUrl("")
+                    setUploadKey("")
+                  }}
+                  disabled={isSubmitting}
+                >
+                  Change Image
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

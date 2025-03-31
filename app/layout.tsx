@@ -1,9 +1,15 @@
 import type React from "react"
-import { AuthProvider } from "@/components/auth-provider"
+import { Inter } from "next/font/google"
+import { Providers } from "@/app/providers"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
-import { ThemeProvider } from "@/components/theme-provider"
+import { Toaster } from "@/components/ui/toaster"
 import "./globals.css"
+
+const fontSans = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+})
 
 export const metadata = {
   title: "Anhelina Vavzhyniak | Fotografka",
@@ -16,15 +22,14 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="cs" suppressHydrationWarning>
+    <html lang="cs" suppressHydrationWarning className={`${fontSans.variable}`}>
       <body className="min-h-screen flex flex-col" suppressHydrationWarning>
-        <AuthProvider>
-          <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
-            <SiteHeader />
-            <main className="flex-1">{children}</main>
-            <SiteFooter />
-          </ThemeProvider>
-        </AuthProvider>
+        <Providers>
+          <SiteHeader />
+          <main className="flex-1">{children}</main>
+          <SiteFooter />
+          <Toaster />
+        </Providers>
       </body>
     </html>
   )

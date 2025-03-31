@@ -3,40 +3,54 @@
 import Link from "next/link"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Menu, X, Camera, Instagram, Facebook } from "lucide-react"
+import { Menu, X, Instagram, Facebook } from "lucide-react"
+// Přidejte import Logo komponenty
+import { Logo } from "@/components/logo"
 
 export function SiteHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   return (
-    <header className="w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between">
+    <header className="w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40">
+      <div className="container flex h-14 sm:h-16 items-center justify-between">
+        {/* Nahraďte stávající logo v Link elementu */}
         <Link href="/" className="flex items-center space-x-2">
-          <Camera className="h-6 w-6" />
-          <span className="font-semibold">Anhelina Vavzhyniak</span>
+          <Logo size="md" />
         </Link>
 
         {/* Mobile menu button */}
         <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-          {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           <span className="sr-only">Toggle menu</span>
         </Button>
 
         {/* Desktop navigation */}
-        <nav className="hidden md:flex items-center space-x-6">
-          <Link href="/" className="text-sm font-medium transition-colors hover:text-primary">
+        <nav className="hidden md:flex items-center space-x-1 lg:space-x-6">
+          <Link href="/" className="text-xs lg:text-sm font-medium transition-colors hover:text-primary px-2 py-1">
             Domů
           </Link>
-          <Link href="/portfolio" className="text-sm font-medium transition-colors hover:text-primary">
+          <Link
+            href="/portfolio"
+            className="text-xs lg:text-sm font-medium transition-colors hover:text-primary px-2 py-1"
+          >
             Portfolio
           </Link>
-          <Link href="/sluzby" className="text-sm font-medium transition-colors hover:text-primary">
+          <Link
+            href="/sluzby"
+            className="text-xs lg:text-sm font-medium transition-colors hover:text-primary px-2 py-1"
+          >
             Služby
           </Link>
-          <Link href="/o-mne" className="text-sm font-medium transition-colors hover:text-primary">
+          <Link href="/blog" className="text-xs lg:text-sm font-medium transition-colors hover:text-primary px-2 py-1">
+            Blog
+          </Link>
+          <Link href="/o-mne" className="text-xs lg:text-sm font-medium transition-colors hover:text-primary px-2 py-1">
             O mně
           </Link>
-          <Link href="/kontakt" className="text-sm font-medium transition-colors hover:text-primary">
+          <Link
+            href="/kontakt"
+            className="text-xs lg:text-sm font-medium transition-colors hover:text-primary px-2 py-1"
+          >
             Kontakt
           </Link>
           <div className="flex items-center space-x-1">
@@ -58,8 +72,8 @@ export function SiteHeader() {
 
       {/* Mobile navigation */}
       {isMenuOpen && (
-        <div className="md:hidden">
-          <div className="container py-4 space-y-2">
+        <div className="md:hidden absolute w-full bg-background border-b z-50">
+          <div className="container py-3 space-y-1">
             <Link href="/" className="flex items-center py-2 hover:text-primary" onClick={() => setIsMenuOpen(false)}>
               Domů
             </Link>
@@ -76,6 +90,13 @@ export function SiteHeader() {
               onClick={() => setIsMenuOpen(false)}
             >
               Služby
+            </Link>
+            <Link
+              href="/blog"
+              className="flex items-center py-2 hover:text-primary"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Blog
             </Link>
             <Link
               href="/o-mne"

@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "av-portfolio-db776"
+    "default": "your-firebase-project-id"
   }
 }
+
