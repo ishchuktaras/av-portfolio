@@ -598,14 +598,8 @@ export const mockDb = {
 
 // Helper function to get the appropriate database instance
 export function getDb() {
-  // If the real db is not available, use the mock db
-  try {
-    const { db } = require("./db")
-    if (!db) throw new Error("Real database not available")
-    return db
-  } catch (error) {
-    console.log("Using mock database")
-    return mockDb
-  }
+  // Always use the mock db for now until we have a proper database setup
+  console.log("Using mock database")
+  return mockDb
 }
 

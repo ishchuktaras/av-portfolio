@@ -3,7 +3,7 @@ import postgres from "postgres"
 import { migrate } from "drizzle-orm/postgres-js/migrator"
 
 // Create a more serverless-friendly connection
-let db: ReturnType<typeof drizzle>
+let db: ReturnType<typeof drizzle> | null = null
 
 try {
   // Check if DATABASE_URL is available
@@ -26,6 +26,7 @@ try {
 } catch (error) {
   console.error("Failed to initialize database connection:", error)
   // We'll handle the fallback to mock data in the routes
+  db = null
 }
 
 // Run migrations (for development)

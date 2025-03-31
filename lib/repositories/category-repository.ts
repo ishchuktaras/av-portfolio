@@ -9,9 +9,8 @@ import { getDb } from "@/lib/mock-db"
  */
 export class CategoryRepository implements BaseRepository<Category, NewCategory> {
   async findAll(): Promise<Category[]> {
-    const db = getDb()
-
     try {
+      const db = getDb()
       return await db.select().from(categories).orderBy(categories.name)
     } catch (error) {
       console.error("Error fetching categories:", error)
@@ -20,9 +19,8 @@ export class CategoryRepository implements BaseRepository<Category, NewCategory>
   }
 
   async findById(id: number): Promise<Category | null> {
-    const db = getDb()
-
     try {
+      const db = getDb()
       const results = await db.select().from(categories).where(eq(categories.id, id)).limit(1)
       return results.length > 0 ? results[0] : null
     } catch (error) {
@@ -32,9 +30,8 @@ export class CategoryRepository implements BaseRepository<Category, NewCategory>
   }
 
   async findBySlug(slug: string): Promise<Category | null> {
-    const db = getDb()
-
     try {
+      const db = getDb()
       const results = await db.select().from(categories).where(eq(categories.slug, slug)).limit(1)
       return results.length > 0 ? results[0] : null
     } catch (error) {
@@ -44,9 +41,8 @@ export class CategoryRepository implements BaseRepository<Category, NewCategory>
   }
 
   async create(data: NewCategory): Promise<Category> {
-    const db = getDb()
-
     try {
+      const db = getDb()
       const result = await db.insert(categories).values(data).returning()
       return result[0]
     } catch (error) {
@@ -56,9 +52,8 @@ export class CategoryRepository implements BaseRepository<Category, NewCategory>
   }
 
   async update(id: number, data: Partial<NewCategory>): Promise<Category> {
-    const db = getDb()
-
     try {
+      const db = getDb()
       const result = await db.update(categories).set(data).where(eq(categories.id, id)).returning()
 
       if (result.length === 0) {
@@ -73,9 +68,8 @@ export class CategoryRepository implements BaseRepository<Category, NewCategory>
   }
 
   async delete(id: number): Promise<void> {
-    const db = getDb()
-
     try {
+      const db = getDb()
       await db.delete(categories).where(eq(categories.id, id))
     } catch (error) {
       console.error(`Error deleting category with id ${id}:`, error)
