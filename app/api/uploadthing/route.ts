@@ -1,9 +1,11 @@
-import { createNextRouteHandler } from "uploadthing/next"
+// Dočasná implementace bez uploadthing
+import { NextResponse } from "next/server"
 
-import { uploadRouter } from "@/lib/uploadthing"
+export async function GET() {
+  return NextResponse.json({ message: "Upload API is temporarily disabled" })
+}
 
-// Export routes for Next App Router
-export const { GET, POST } = createNextRouteHandler({
-  router: uploadRouter,
-})
+export async function POST() {
+  return NextResponse.json({ message: "Upload API is temporarily disabled" }, { status: 503 })
+}
 

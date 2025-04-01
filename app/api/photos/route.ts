@@ -1,6 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { getPhotos, createPhoto } from "@/lib/api/photos"
-import { getAuthSession } from "@/lib/auth"
 
 export async function GET(req: NextRequest) {
   try {
@@ -22,11 +21,11 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await getAuthSession()
-
-    if (!session?.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
+    // Dočasně odstraněna autentizace
+    // const session = await getAuthSession()
+    // if (!session?.user) {
+    //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    // }
 
     const body = await req.json()
     const { title, description, categoryId, aspectRatio, imageUrl, thumbnailUrl, uploadKey, featured, tags } = body

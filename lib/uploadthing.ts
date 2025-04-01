@@ -1,7 +1,5 @@
-// Zakomentovat nebo nahradit dočasným řešením:
-
+// Dočasná implementace bez uploadthing
 export const uploadRouter = {
-  // Dočasná implementace
   imageUploader: null,
   coverImage: null,
 }
