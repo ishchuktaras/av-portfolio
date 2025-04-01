@@ -1,14 +1,14 @@
-import { QueryClient } from "@tanstack/react-query"
+// Zakomentovat nebo nahradit dočasným řešením:
 
-// Vytvoření QueryClient s výchozí konfigurací
-export const queryClient = new QueryClient({
+// Dočasná náhrada za QueryClient
+export const queryClient = {
   defaultOptions: {
     queries: {
-      staleTime: 60 * 1000, // 1 minuta
-      cacheTime: 5 * 60 * 1000, // 5 minut
+      staleTime: 60 * 1000,
+      cacheTime: 5 * 60 * 1000,
       refetchOnWindowFocus: false,
       retry: 1,
     },
   },
-})
+}
 

@@ -88,3 +88,12 @@ export type PhotoCategory =
   | "blackandwhite"
   | "conceptual"
 
+// Add missing users table definition
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 256 }),
+  email: varchar("email", { length: 256 }).notNull(),
+  password: varchar("password", { length: 256 }).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+})
+

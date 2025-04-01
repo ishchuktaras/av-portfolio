@@ -13,6 +13,8 @@ export interface Photo {
   dateCreated: string
   tags?: string[]
   featured?: boolean
+  width: number
+  height: number
 }
 
 // Firebase configuration
