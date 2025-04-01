@@ -3,18 +3,24 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Upload, Grid, ImageIcon } from "lucide-react"
-import { db } from "@/lib/db"
-import { photos, categories } from "@/lib/schema"
-import { PhotoGrid } from "@/components/photo-grid"
-import { CategoryFilter } from "@/components/category-filter"
 
-export const revalidate = 0
+// Dočasná mock data pro vývoj
+interface Photo {
+  id: string
+  url: string
+  title: string
+  featured: boolean
+}
 
-export default async function PhotosAdminPage() {
-  const allPhotos = await db.select().from(photos).orderBy(photos.createdAt)
-  const allCategories = await db.select().from(categories)
+const mockPhotos: Photo[] = [
+  // Přidejte několik ukázkových fotografií, pokud chcete
+]
 
-  const featuredPhotos = allPhotos.filter((photo) => photo.featured)
+export default function PhotosAdminPage() {
+  // Použití mock dat místo přístupu k databázi
+  const allPhotos = mockPhotos
+  const allCategories = []
+  const featuredPhotos = mockPhotos.filter((photo) => photo.featured)
 
   return (
     <div className="container py-12">
@@ -40,43 +46,33 @@ export default async function PhotosAdminPage() {
               Featured
             </TabsTrigger>
           </TabsList>
-
-          <CategoryFilter categories={allCategories} />
         </div>
 
         <TabsContent value="all">
-          {allPhotos.length === 0 ? (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <div className="mx-auto w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-4">
-                  <ImageIcon className="h-6 w-6 text-muted-foreground" />
-                </div>
-                <h3 className="text-lg font-medium mb-2">No photos yet</h3>
-                <p className="text-muted-foreground mb-4">Upload your first photo to get started</p>
-                <Link href="/admin/photos/upload">
-                  <Button>Upload Photo</Button>
-                </Link>
-              </CardContent>
-            </Card>
-          ) : (
-            <PhotoGrid photos={allPhotos} isAdmin />
-          )}
+          <Card>
+            <CardContent className="py-12 text-center">
+              <div className="mx-auto w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-4">
+                <ImageIcon className="h-6 w-6 text-muted-foreground" />
+              </div>
+              <h3 className="text-lg font-medium mb-2">No photos yet</h3>
+              <p className="text-muted-foreground mb-4">Upload your first photo to get started</p>
+              <Link href="/admin/photos/upload">
+                <Button>Upload Photo</Button>
+              </Link>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="featured">
-          {featuredPhotos.length === 0 ? (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <div className="mx-auto w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-4">
-                  <ImageIcon className="h-6 w-6 text-muted-foreground" />
-                </div>
-                <h3 className="text-lg font-medium mb-2">No featured photos</h3>
-                <p className="text-muted-foreground mb-4">Mark photos as featured to display them here</p>
-              </CardContent>
-            </Card>
-          ) : (
-            <PhotoGrid photos={featuredPhotos} isAdmin />
-          )}
+          <Card>
+            <CardContent className="py-12 text-center">
+              <div className="mx-auto w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-4">
+                <ImageIcon className="h-6 w-6 text-muted-foreground" />
+              </div>
+              <h3 className="text-lg font-medium mb-2">No featured photos</h3>
+              <p className="text-muted-foreground mb-4">Mark photos as featured to display them here</p>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

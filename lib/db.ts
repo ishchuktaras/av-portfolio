@@ -1,6 +1,7 @@
 import { drizzle } from "drizzle-orm/postgres-js"
 import postgres from "postgres"
 import { migrate } from "drizzle-orm/postgres-js/migrator"
+import { getDb as getMockDb } from "./mock-db"
 
 // Create a more serverless-friendly connection
 let db: ReturnType<typeof drizzle> | null = null
@@ -27,6 +28,12 @@ try {
   console.error("Failed to initialize database connection:", error)
   // We'll handle the fallback to mock data in the routes
   db = null
+}
+
+// Export the db instance or mock db if real db is not available
+export const getDb = () => {
+  if (db) return db
+  return getMockDb()
 }
 
 // Run migrations (for development)

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -99,6 +100,10 @@ export function PhotoGrid({ photos, isAdmin = false }: PhotoGridProps) {
     }
   }
 
+  if (photos.length === 0) {
+    return null
+  }
+
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -107,9 +112,10 @@ export function PhotoGrid({ photos, isAdmin = false }: PhotoGridProps) {
             <AspectRatio
               ratio={photo.aspectRatio === "portrait" ? 3 / 4 : photo.aspectRatio === "landscape" ? 16 / 9 : 1 / 1}
             >
-              <img
-                src={photo.imageUrl || "/placeholder.svg"}
+              <Image
+                src={photo.thumbnailUrl || photo.imageUrl || "/placeholder.svg"}
                 alt={photo.title}
+                fill
                 className="object-cover w-full h-full transition-transform group-hover:scale-105"
               />
 
@@ -152,7 +158,14 @@ export function PhotoGrid({ photos, isAdmin = false }: PhotoGridProps) {
             </AspectRatio>
             <CardContent className="p-3">
               <h3 className="font-medium truncate">{photo.title}</h3>
-              {photo.category && <p className="text-sm text-muted-foreground">{photo.category}</p>}
+              {photo.categoryId && <p className="text-sm text-muted-foreground">Category ID: {photo.categoryId}</p>}
+              {isAdmin && (
+                <div className="flex gap-2 mt-2">
+                  <Link href={`/admin/photos/edit/${photo.id}`}>
+                    <button className="text-sm text-blue-500 hover:underline">Edit</button>
+                  </Link>
+                </div>
+              )}
             </CardContent>
           </Card>
         ))}
